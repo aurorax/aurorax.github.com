@@ -8,9 +8,8 @@ before_install:
   - cp .travis/ssh_config ~/.ssh/config
   - git config --global user.name aurorax
   - git config --global user.email i@aurorax.org
-  - npm install hexo@3.3.1 -g
-  - git clone https://github.com/aurorax/aurorax.github.com .deploy
-  - cd .deploy
+  - npm install hexo@3.3.1 --save
+  - git clone https://github.com/aurorax/aurorax.github.com
 
 script:
   - hexo generate
