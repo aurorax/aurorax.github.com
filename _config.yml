@@ -69,6 +69,6 @@ theme: next
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/aurorax/aurorax.github.com.git
+  repo: git@github.com:aurorax/aurorax.github.com.git
   branch: master
   message: update blog
