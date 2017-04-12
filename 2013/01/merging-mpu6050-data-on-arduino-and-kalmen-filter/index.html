@@ -1,0 +1,815 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="arduino,filter,kalmen,mpu6050,卡尔曼,姿态,姿态角,数据融合,滤波," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="关于四轴飞行器的飞控程序，最近有了点阶段性成果，写出来给大家作参考。参考了太多资料了，地址都没记下来，没法贴出来。如果你发现有你的东西，请联系我。刚开始学习的时候买的是Arduino UNO，很大但是接线方便。后来焊板子用的就是nano了。首先说一下mpu6050的加速度与角速度的数据融合。但是得到的波形很不理想，于是就转向DMP了。开始…直接上程序… #include &amp;quot;Wire.h&amp;">
+<meta name="keywords" content="arduino,filter,kalmen,mpu6050,卡尔曼,姿态,姿态角,数据融合,滤波">
+<meta property="og:type" content="article">
+<meta property="og:title" content="arduino控制mpu6050进行姿态角测量及卡尔曼滤波">
+<meta property="og:url" content="http://aurorax.org/2013/01/merging-mpu6050-data-on-arduino-and-kalmen-filter/index.html">
+<meta property="og:site_name" content="aurorax">
+<meta property="og:description" content="关于四轴飞行器的飞控程序，最近有了点阶段性成果，写出来给大家作参考。参考了太多资料了，地址都没记下来，没法贴出来。如果你发现有你的东西，请联系我。刚开始学习的时候买的是Arduino UNO，很大但是接线方便。后来焊板子用的就是nano了。首先说一下mpu6050的加速度与角速度的数据融合。但是得到的波形很不理想，于是就转向DMP了。开始…直接上程序… #include &amp;quot;Wire.h&amp;">
+<meta property="og:updated_time" content="2017-04-12T05:39:06.251Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="arduino控制mpu6050进行姿态角测量及卡尔曼滤波">
+<meta name="twitter:description" content="关于四轴飞行器的飞控程序，最近有了点阶段性成果，写出来给大家作参考。参考了太多资料了，地址都没记下来，没法贴出来。如果你发现有你的东西，请联系我。刚开始学习的时候买的是Arduino UNO，很大但是接线方便。后来焊板子用的就是nano了。首先说一下mpu6050的加速度与角速度的数据融合。但是得到的波形很不理想，于是就转向DMP了。开始…直接上程序… #include &amp;quot;Wire.h&amp;">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://aurorax.org/2013/01/merging-mpu6050-data-on-arduino-and-kalmen-filter/"/>
+
+
+
+
+
+  <title> arduino控制mpu6050进行姿态角测量及卡尔曼滤波 | aurorax </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">aurorax</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good judgment comes from experience and all of that comes from bad judgment.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://aurorax.org/2013/01/merging-mpu6050-data-on-arduino-and-kalmen-filter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="aurorax">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="aurorax">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                arduino控制mpu6050进行姿态角测量及卡尔曼滤波
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2013-01-31T09:10:48+00:00">
+                2013-01-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Code/" itemprop="url" rel="index">
+                    <span itemprop="name">Code</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>关于四轴飞行器的飞控程序，最近有了点阶段性成果，写出来给大家作参考。<br>参考了太多资料了，地址都没记下来，没法贴出来。如果你发现有你的东西，请联系我。<br>刚开始学习的时候买的是Arduino UNO，很大但是接线方便。后来焊板子用的就是nano了。<br>首先说一下mpu6050的加速度与角速度的数据融合。但是得到的波形很不理想，于是就转向DMP了。<br>开始…<br>直接上程序…</p>
+<pre><code>#include &quot;Wire.h&quot;
+#include &quot;I2Cdev.h&quot;
+#include &quot;MPU6050.h&quot;
+
+MPU6050 accelgyro;
+
+unsigned long now, lastTime = 0;
+float dt;                                   //微分时间
+
+int16_t ax, ay, az, gx, gy, gz;             //加速度计陀螺仪原始数据
+float aax=0, aay=0, agx=0, agy=0, agz=0;    //角度变量
+long axo = 0, ayo = 0, azo = 0;             //加速度计偏移量
+long gxo = 0, gyo = 0, gzo = 0;             //陀螺仪偏移量
+
+float pi = 3.1415926;
+float AcceRatio = 16384.0;                  //加速度计比例系数
+float GyroRatio = 131.0;                    //陀螺仪比例系数
+
+uint8_t n_sample = 8;                       //加速度计滤波算法采样个数
+float aaxs[8] = {0}, aays[8] = {0};         //x,y轴采样队列
+long aax_sum, aay_sum;                      //x,y轴采样和
+
+float a_x[10]={0}, a_y[10]={0} ,g_x[10]={0} ,g_y[10]={0}; //加速度计协方差计算队列
+float Px=1, Rx, Kx, Sx, Vx, Qx;             //x轴卡尔曼变量
+float Py=1, Ry, Ky, Sy, Vy, Qy;             //y轴卡尔曼变量
+
+void setup() {
+  Wire.begin();
+  Serial.begin(9600);
+
+  accelgyro.initialize();                 //初始化
+
+  unsigned short times = 200;             //采样次数
+  for(int i=0;i&lt;times;i++){
+    accelgyro.getMotion6(&amp;ax, &amp;ay, &amp;az, &amp;gx, &amp;gy, &amp;gz); //读取六轴原始数值
+    axo += ax; ayo += ay; azo += az;      //采样和
+    gxo += gx; gyo += gy; gzo += gz;
+  }
+  axo /= times; ayo /= times; azo /= times; //计算加速度计偏移
+  gxo /= times; gyo /= times; gzo /= times; //计算陀螺仪偏移
+}
+
+void loop(){
+  unsigned long now = millis();             //当前时间(ms)
+  dt = (now - lastTime) / 1000.0;           //微分时间(s)
+  lastTime = now;                           //上一次采样时间(ms)
+
+  accelgyro.getMotion6(&amp;ax, &amp;ay, &amp;az, &amp;gx, &amp;gy, &amp;gz); //读取六轴原始数值
+
+  float accx = ax / AcceRatio;              //x轴加速度
+  float accy = ay / AcceRatio;              //y轴加速度
+  float accz = az / AcceRatio;              //z轴加速度
+
+  aax = atan(accy / accz) * (-180) / pi;    //x轴对于水平面的夹角
+  aay = atan(accx / accz) * 180 / pi;       //y轴对于水平面的夹角
+
+  aax_sum = 0;                              // 对于加速度计原始数据的滑动加权滤波算法
+  aay_sum = 0;
+  for(int i=1;i&lt;n_sample;i++){
+    aaxs[i-1] = aaxs[i];
+    aax_sum += aaxs[i] * i;
+    aays[i-1] = aays[i];
+    aay_sum += aays[i] * i;
+  }
+  aaxs[n_sample-1] = aax;
+  aax_sum += aax * n_sample;
+  aax = (aax_sum / (11*n_sample/2.0)) * 9 / 7.0; //角度调幅至0-90°
+  aays[n_sample-1] = aay;                        //此处应用实验法取得合适的系数
+  aay_sum += aay * n_sample;                     //本例系数为9/7
+  aay = (aay_sum / (11*n_sample/2.0)) * 9 / 7.0;
+
+  float gyrox = - (gx-gxo) / GyroRatio * dt; //x轴角速度
+  float gyroy = - (gy-gyo) / GyroRatio * dt; //y轴角速度
+  agx += gyrox;                             //x轴角速度积分
+  agy += gyroy;                             //x轴角速度积分
+
+  /* kalmen start */
+  Sx = 0; Rx = 0;
+  Sy = 0; Ry = 0;
+  for(int i=1;i&amp;lt;10;i++){                 //测量值平均值运算
+    a_x[i-1] = a_x[i];                      //即加速度平均值
+    Sx += a_x[i];
+    a_y[i-1] = a_y[i];
+    Sy += a_y[i];
+  }
+  a_x[9] = aax;
+  Sx += aax;
+  Sx /= 10;                                 //x轴加速度平均值
+  a_y[9] = aay;
+  Sy += aay;
+  Sy /= 10;                                 //y轴加速度平均值
+
+  for(int i=0;i&amp;lt;10;i++){
+    Rx += sq(a_x[i] - Sx);
+    Ry += sq(a_y[i] - Sy);
+  }
+  Rx = Rx / 9;                              //得到方差
+  Ry = Ry / 9;                        
+
+  Px = Px + 0.0025;                         // 0.0025在下面有说明...
+  Kx = Px / (Px + Rx);                      //计算卡尔曼增益
+  agx = agx + Kx * (aax - agx);             //陀螺仪角度与加速度计速度叠加
+  Px = (1 - Kx) * Px;                       //更新p值
+
+  Py = Py + 0.0025;
+  Ky = Py / (Py + Ry);
+  agy = agy + Ky * (aay - agy); 
+  Py = (1 - Ky) * Py;
+
+  /* kalmen end */
+
+  Serial.print(agx);Serial.print(&quot;,&quot;);
+  Serial.print(agy);Serial.println();
+</code></pre><p>解释一下程序。<br>采样200次取平均值计算加速度计和陀螺仪的偏差。<br>进入循环，用反正切求出加速度角度，滑动采样8次进行滑动加权滤波，乘以用实验法获得的系数，以调整角度到正确的值。<br>对角速度积分得到陀螺仪角度，进入卡尔曼滤波。<br>其实对于卡尔曼滤波公式我也没大看懂，公式是从别人那抄的，我稍稍修改了一下，看起来更像一个自适应的互补滤波。<br>对加速度角度建立一个滑动采样队列，采样数为10，求出队列方差，并适当缩小后（本例为缩小5倍），运算得到卡尔曼增益。<br>加速度角度与陀螺仪角度做差后，乘以卡尔曼增益叠加到陀螺仪角度上。更新P值。</p>
+<hr>
+<p>得到的波形并不是很理想，只是给大家提供一个思路。<br>由于后来改用mpu6050的dmp了，程序最后也没有仔细验证，如果测试有问题可以给我留言。<br>关于dmp的应用，后面再写吧。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/arduino/" rel="tag"># arduino</a>
+          
+            <a href="/tags/filter/" rel="tag"># filter</a>
+          
+            <a href="/tags/kalmen/" rel="tag"># kalmen</a>
+          
+            <a href="/tags/mpu6050/" rel="tag"># mpu6050</a>
+          
+            <a href="/tags/卡尔曼/" rel="tag"># 卡尔曼</a>
+          
+            <a href="/tags/姿态/" rel="tag"># 姿态</a>
+          
+            <a href="/tags/姿态角/" rel="tag"># 姿态角</a>
+          
+            <a href="/tags/数据融合/" rel="tag"># 数据融合</a>
+          
+            <a href="/tags/滤波/" rel="tag"># 滤波</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2013/02/after-the-spring-festival/" rel="next" title="过完年了">
+                <i class="fa fa-chevron-left"></i> 过完年了
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2012/12/php-self-script-name-request-uri/" rel="prev" title="php:PHP_SELF,SCRIPT_NAME,REQUEST_URI">
+                php:PHP_SELF,SCRIPT_NAME,REQUEST_URI <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="aurorax" />
+          <p class="site-author-name" itemprop="name">aurorax</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">259</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-github"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">aurorax</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

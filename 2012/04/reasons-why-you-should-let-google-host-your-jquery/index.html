@@ -1,0 +1,687 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="google,jquery," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="3 reasons why you should let Google host jQuery for you 翻译原文：（实在懒得翻译了）为什么推荐使用谷歌加载jquery库文件 1.减少等待时间 CDN-Content Delivery Network（内容发布网络）的缩写，通过各种各样的服务途径把你的一些静态内容分散开来，当用户的浏览器提交这些文件的链接请求，他们便会自动下载网络上最近的可用">
+<meta name="keywords" content="google,jquery">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用谷歌加载jQuery的原因">
+<meta property="og:url" content="http://aurorax.org/2012/04/reasons-why-you-should-let-google-host-your-jquery/index.html">
+<meta property="og:site_name" content="aurorax">
+<meta property="og:description" content="3 reasons why you should let Google host jQuery for you 翻译原文：（实在懒得翻译了）为什么推荐使用谷歌加载jquery库文件 1.减少等待时间 CDN-Content Delivery Network（内容发布网络）的缩写，通过各种各样的服务途径把你的一些静态内容分散开来，当用户的浏览器提交这些文件的链接请求，他们便会自动下载网络上最近的可用">
+<meta property="og:updated_time" content="2017-04-12T05:39:06.251Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用谷歌加载jQuery的原因">
+<meta name="twitter:description" content="3 reasons why you should let Google host jQuery for you 翻译原文：（实在懒得翻译了）为什么推荐使用谷歌加载jquery库文件 1.减少等待时间 CDN-Content Delivery Network（内容发布网络）的缩写，通过各种各样的服务途径把你的一些静态内容分散开来，当用户的浏览器提交这些文件的链接请求，他们便会自动下载网络上最近的可用">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://aurorax.org/2012/04/reasons-why-you-should-let-google-host-your-jquery/"/>
+
+
+
+
+
+  <title> 使用谷歌加载jQuery的原因 | aurorax </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">aurorax</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good judgment comes from experience and all of that comes from bad judgment.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://aurorax.org/2012/04/reasons-why-you-should-let-google-host-your-jquery/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="aurorax">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="aurorax">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用谷歌加载jQuery的原因
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2012-04-15T14:55:08+00:00">
+                2012-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Code/" itemprop="url" rel="index">
+                    <span itemprop="name">Code</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://www.ajaxlines.com/ajax/stuff/article/_reasons_why_you_should_let_google_host_jquery_for_you.php" target="_blank" rel="external">3 reasons why you should let Google host jQuery for you</a> 翻译原文：（实在懒得翻译了）<a href="http://www.skygq.com/2011/03/10/%e4%b8%ba%e4%bb%80%e4%b9%88%e6%8e%a8%e8%8d%90%e4%bd%bf%e7%94%a8%e8%b0%b7%e6%ad%8c%e5%8a%a0%e8%bd%bdjquery%e5%ba%93%e6%96%87%e4%bb%b6/" target="_blank" rel="external">为什么推荐使用谷歌加载jquery库文件</a> 1.减少等待时间 CDN-Content Delivery Network（内容发布网络）的缩写，通过各种各样的服务途径把你的一些静态内容分散开来，当用户的浏览器提交这些文件的链接请求，他们便会自动下载网络上最近的可用的文件。 因为这个原因：任何使用你服务的用户从谷歌下载JQuery库都将获得比从你自己的服务器上下载更快的速度。其实有很多的CDN服务可与谷歌的相比拟，但是他们很难超越谷歌的免费服务的优势，这个益处足以决定问题，但这仅仅是一部分。 2.增加网页的同时载入速度 为了避免服务的过载，浏览器限制了同时连接的数目，依据不同的浏览器，这个限制可能是每个机房仅仅两个之少。 使用谷歌的AJAX内容服务网络来响应你的网站，使你本地服务器上更多服务可以同时进行，这和用户同时用6个浏览器浏览的效果没多大诧异，但是（那些不这么做的人）任然是运行一个浏览器，仅仅允许同时链接两个（链接数目到你的服务器上），这里的区别显而易见。 3.更好的缓存 利用谷歌AJAX图书馆内容发布服务的最大好处是你的用户根本不需要下载jQuery.不论你的缓存多么强大，如果你用自己的服务器提供jQuery，那么你的用户至少要下载一次它，某个用户很有可能在他们浏览器的缓存区里下载了许多完全相同的jQuery.min.js的拷贝版本，但是当他们第一次访问你的网站的时候，这些拷贝版本会被忽略。 另一方面，当浏览器检测到同样版本的指向谷歌的链接，它就会知道这是下载同一个文件，不仅是谷歌的服务器会返回一个304（不需要修改文件的指令，即服务器上的文件未改动过）来回复一个重复的请求，而且会命令浏览器的缓存该文件长达一年的时间。 这意味着即使一些人访问了数百的使用谷歌服务的jQuery网站,他们只需要下载一次就够了。 一旦谷歌服务器不能访问（这个可能性不大，更多的可能是被墙），译文给出了解决的办法</p>
+<pre><code>&lt;SCRIPT type=text/javascript src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js&quot;&gt;&lt;/SCRIPT&gt;
+&lt;script&gt;!window.jQuery &amp;&amp; document.write(&apos;&lt;SCRIPT src=&quot;jquery-1.4.3.min.js&quot;&gt;&lt;/SCRIPT&gt;&apos;);&lt;/script&gt;
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/google/" rel="tag"># google</a>
+          
+            <a href="/tags/jquery/" rel="tag"># jquery</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2012/05/never-upgrade-to-discuz-x2-5/" rel="next" title="千万不要升级discuz x2.5">
+                <i class="fa fa-chevron-left"></i> 千万不要升级discuz x2.5
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2012/03/the-rising-tune-while-making-instant-coffee/" rel="prev" title="冲速溶咖啡时敲击杯子底的声音">
+                冲速溶咖啡时敲击杯子底的声音 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="aurorax" />
+          <p class="site-author-name" itemprop="name">aurorax</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">259</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-github"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">aurorax</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

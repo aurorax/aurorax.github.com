@@ -1,0 +1,717 @@
+<!doctype html>
+
+
+
+
+<html class="theme-next mist" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="ddns,dns.la,raspberry pi,免费,动态域名,绑定," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="DDNS(Dynamic Domain Name System)动态域名系统，解决了非固定ip的域名解析问题，国内外很多网站提供这类服务，例如花生壳。但是前一阵花生壳推出“新花生壳”之后，竟然停止了顶级域名的免费ns导入解析，如果需要使用花生壳ddns解析顶级域名，每年每个域名需要交40元。不愿意交钱，并且免费级的解析记录更新时间一般很长，搜索了一下其他的ddns服务，发现花生壳竟然还算便宜的，于">
+<meta name="keywords" content="ddns,dns.la,raspberry pi,免费,动态域名,绑定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dns.la动态域名脚本ddnsla">
+<meta property="og:url" content="http://aurorax.org/2013/12/ddnsla/index.html">
+<meta property="og:site_name" content="aurorax">
+<meta property="og:description" content="DDNS(Dynamic Domain Name System)动态域名系统，解决了非固定ip的域名解析问题，国内外很多网站提供这类服务，例如花生壳。但是前一阵花生壳推出“新花生壳”之后，竟然停止了顶级域名的免费ns导入解析，如果需要使用花生壳ddns解析顶级域名，每年每个域名需要交40元。不愿意交钱，并且免费级的解析记录更新时间一般很长，搜索了一下其他的ddns服务，发现花生壳竟然还算便宜的，于">
+<meta property="og:updated_time" content="2017-04-12T05:39:06.251Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="dns.la动态域名脚本ddnsla">
+<meta name="twitter:description" content="DDNS(Dynamic Domain Name System)动态域名系统，解决了非固定ip的域名解析问题，国内外很多网站提供这类服务，例如花生壳。但是前一阵花生壳推出“新花生壳”之后，竟然停止了顶级域名的免费ns导入解析，如果需要使用花生壳ddns解析顶级域名，每年每个域名需要交40元。不愿意交钱，并且免费级的解析记录更新时间一般很长，搜索了一下其他的ddns服务，发现花生壳竟然还算便宜的，于">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://aurorax.org/2013/12/ddnsla/"/>
+
+
+
+
+
+  <title> dns.la动态域名脚本ddnsla | aurorax </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">aurorax</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Good judgment comes from experience and all of that comes from bad judgment.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://aurorax.org/2013/12/ddnsla/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="aurorax">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="aurorax">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                dns.la动态域名脚本ddnsla
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2013-12-28T16:55:47+00:00">
+                2013-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Code/" itemprop="url" rel="index">
+                    <span itemprop="name">Code</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Code/Web/" itemprop="url" rel="index">
+                    <span itemprop="name">Web</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>DDNS(Dynamic Domain Name System)动态域名系统，解决了非固定ip的域名解析问题，国内外很多网站提供这类服务，例如花生壳。<br>但是前一阵花生壳推出“新花生壳”之后，竟然停止了顶级域名的免费ns导入解析，如果需要使用花生壳ddns解析顶级域名，每年每个域名需要交40元。<br>不愿意交钱，并且免费级的解析记录更新时间一般很长，搜索了一下其他的ddns服务，发现花生壳竟然还算便宜的，于是决定自己解决问题。<br>由于域名在国外，使用的是dns.la的解析服务，查看了一下发现开放了api，于是着手用python写了一个小脚本。<br>源码：<a href="https://github.com/aurorax/ddnsla" target="_blank" rel="external">https://github.com/aurorax/ddnsla</a><br>需要一个具有外网ip的网络接口，一个raspberry pi或是任何可以跑python脚本的东西。<br>注册一个dns.la帐号，开启账号的api，会得到一个apiid和api密钥。在域名服务商处修改域名的NS地址，使域名dns转移至dns.la，等待修改生效，然后添加一条需要解析的A记录。<br>下载ddns.py，用任何文档编辑器打开。</p>
+<pre><code>tz = &apos;Asia/Shanghai&apos;
+apiid = &apos;test&apos;
+apipass = &apos;pass&apos;
+domain = &apos;domain.com&apos;
+host = &apos;@&apos;
+type = &apos;A&apos;
+ttl = &apos;300&apos;
+loop = 5 #seconds
+</code></pre><p>需要修改的就是前面的几个变量。tz是时区，apiid和apipass分别更改为dns.la帐号得到的apiid和api密钥，domain是添加到帐号中需要ddns服务的域名，host为域名前缀，ttl就是ttl，loop是检查的间隔时间。<br>需要注意的是，dns.la限制了api调用频率，每小时不超过300次，每天不超过3000次，超出会有惩罚。<br>详见api文档：<a href="https://www.dns.la/api/doc/" target="_blank" rel="external">https://www.dns.la/api/doc/</a><br>脚本正常循环时不调用api，默认为每5s检查本机ip与域名ip是否相同，相同继续循环，不调用api，不同则修改域名ip，每次修改调用2次api。<br>所以如果ip更换十分频繁就要考虑将loop值增大，加长循环周期，降低调用频率。<br>其实算一下就可以得到，正常情况下的ip变更是不会超出api调用频率限制的，不需要调整loop。<br>还有获取本机和域名的ip地址使用的是ip.cn页面，正则提取其中显示的第一个ip，如果需要更换其他的ip地址检查页面可以更改getIP()中的一下变量。<br>修改完毕后，linux中可以后台运行：</p>
+<pre><code>$ nohup python ddns.py &amp;
+</code></pre><p>查看进程：</p>
+<pre><code>$ ps -ef | grep ddns
+</code></pre><p>至此动态域名解析就完成了，暂时只支持单个域名的ddns，如果需要多个域名的ddns可以复制多个脚本，分别更改配置参数就好了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ddns/" rel="tag"># ddns</a>
+          
+            <a href="/tags/dns-la/" rel="tag"># dns.la</a>
+          
+            <a href="/tags/raspberry-pi/" rel="tag"># raspberry pi</a>
+          
+            <a href="/tags/免费/" rel="tag"># 免费</a>
+          
+            <a href="/tags/动态域名/" rel="tag"># 动态域名</a>
+          
+            <a href="/tags/绑定/" rel="tag"># 绑定</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/05/long-time-no-write/" rel="next" title="又是好久不写">
+                <i class="fa fa-chevron-left"></i> 又是好久不写
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2013/12/ixx-url-shortener-2/" rel="prev" title="ixx短地址">
+                ixx短地址 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="aurorax" />
+          <p class="site-author-name" itemprop="name">aurorax</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">85</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">categories</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">259</span>
+                <span class="site-state-item-name">tags</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2013 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-github"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">aurorax</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
